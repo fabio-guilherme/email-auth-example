@@ -1,6 +1,8 @@
 //const transporter = require('./initService').transporter;
 const hbs = require('nodemailer-express-handlebars');
 let nodeMailer = require("nodemailer");
+const dotenv = require('dotenv');
+dotenv.config();
 
 const transporter = nodeMailer.createTransport({
     host: "smtp-mail.outlook.com", // hostname
@@ -34,7 +36,7 @@ function sendVerificationEmail(email, token, jwtToken) {
     return new Promise((resolve, reject) => {
 
         let mailOptions = {
-            from: '<info@bis-mart.com>', // sender address
+            from: '<fabass@gmail.com>', // sender address
             to: email, // List of receivers
             subject: 'Verify Your Account', // Subject line
             context: {
@@ -42,6 +44,8 @@ function sendVerificationEmail(email, token, jwtToken) {
             },
             template: 'verification'
         };
+
+        console.log("[verificationService.sendVerificationEmail] transporter.auth = " + JSON.stringify(process.env.EMAIL_USER));
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {

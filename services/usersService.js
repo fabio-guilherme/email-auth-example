@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 var usersModel = require("../models/usersModel");
 var tokensModel = require("../models/tokensModel");
 const crypto = require('crypto');
+const verificationService = require("./verificationService");
 
 module.exports.login = async function(userInfo) {
     console.log("[userService.login] userInfo = " + JSON.stringify(userInfo));
@@ -37,15 +38,15 @@ module.exports.signup = async function(userInfo) {
             if (result.status = 200) { // Status OK
                 // Verification code generation
                 let userToken = { user_id: result.data.user_id, token: crypto.randomBytes(16).toString('hex') };
-                console.log("[userService.login] userToken = " + userToken);
+                console.log("[userService.signup] userToken = " + userToken);
                 const verificationToken = await tokensModel.saveToken(userToken)
                     // JWT token 
                 let jwtTokenEmailVerify = jwt.sign({ email: userInfo.email }, 'secret', { expiresIn: "1h" });
-                console.log("[userService.login] jwtTokenEmailVerify = " + jwtTokenEmailVerify);
+                console.log("[userService.signup] jwtTokenEmailVerify = " + jwtTokenEmailVerify);
                 // Sending verificaiton email
                 // TODO: Use JWT?
                 //await verificationService.sendVerificationEmail(userInfo.email, verificationToken.dataValues.token, jwtTokenEmailVerify)
-                await verificationService.sendVerificationEmail(userInfo.email, verificationToken.dataValues.token, userToken.token)
+                await verificationService.sendVerificationEmail(userInfo.email, userToken.token, jwtTokenEmailVerify);
                 return { status: 200, msg: `You have Registered Successfully, Activation link sent to: ${userInfo.email}` };
             } else {
                 return { status: result.status, msg: result.smg };
