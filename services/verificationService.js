@@ -5,7 +5,8 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const transporter = nodeMailer.createTransport({
-    host: "smtp-mail.outlook.com", // hostname
+    service: "gmail",
+    host: "smtp.gmail.com", // hostname
     secureConnection: false, // TLS requires secureConnection to be false
     port: 587, // port for secure SMTP
     tls: {
@@ -36,7 +37,7 @@ function sendVerificationEmail(email, token, jwtToken) {
     return new Promise((resolve, reject) => {
 
         let mailOptions = {
-            from: '<fabass@gmail.com>', // sender address
+            from: process.env.EMAIL_USER, // sender address
             to: email, // List of receivers
             subject: 'Verify Your Account', // Subject line
             context: {
@@ -49,7 +50,7 @@ function sendVerificationEmail(email, token, jwtToken) {
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                console.log("err1 ", error);
+                console.log("sendMail error: ", error);
                 reject(error)
 
             } else {
