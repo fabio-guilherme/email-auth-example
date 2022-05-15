@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 var usersModel = require("../models/usersModel");
 var tokensModel = require("../models/tokensModel");
-//const cryptoRandomString = require('crypto-random-string');
+const crypto = require('crypto');
 
 module.exports.login = async function(userInfo) {
     console.log("[userService.login] userInfo = " + JSON.stringify(userInfo));
@@ -36,12 +36,16 @@ module.exports.signup = async function(userInfo) {
             let result = await usersModel.saveUser(userInfo);
             if (result.status = 200) { // Status OK
                 // Verification code generation
-                let token = { user_id: result.data.user_id, token: cryptoRandomString({ length: 20, type: 'url-safe' }) };
-                const verificationToken = await tokensModel.saveToken(token)
+                let userToken = { user_id: result.data.user_id, token: crypto.randomBytes(16).toString('hex') };
+                console.log("[userService.login] userToken = " + userToken);
+                const verificationToken = await tokensModel.saveToken(userToken)
                     // JWT token 
-                let jwtTokenEmailVerify = jwt.sign({ email: user.dataValues.email }, 'secret', { expiresIn: "1h" });
-                //sending verificaiton email
-                await verificationService.sendVerificationEmail(userInfo.email, verificationToken.dataValues.token, jwtTokenEmailVerify)
+                let jwtTokenEmailVerify = jwt.sign({ email: userInfo.email }, 'secret', { expiresIn: "1h" });
+                console.log("[userService.login] jwtTokenEmailVerify = " + jwtTokenEmailVerify);
+                // Sending verificaiton email
+                // TODO: Use JWT?
+                //await verificationService.sendVerificationEmail(userInfo.email, verificationToken.dataValues.token, jwtTokenEmailVerify)
+                await verificationService.sendVerificationEmail(userInfo.email, verificationToken.dataValues.token, userToken.token)
                 return { status: 200, msg: `You have Registered Successfully, Activation link sent to: ${userInfo.email}` };
             } else {
                 return { status: result.status, msg: result.smg };

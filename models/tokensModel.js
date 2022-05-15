@@ -18,12 +18,12 @@ module.exports.saveToken = async function(token) {
             "VALUES (@user_id, @token)";
         const pool = await poolPromise;
         const result = await pool.request()
-            .input('user_id', mssql.Int, user.user_id)
-            .input('token', mssql.VarChar, user.token)
+            .input('user_id', mssql.Int, token.user_id)
+            .input('token', mssql.VarChar, token.token)
             .query(sql);
-        let newTOken = result.recordset[0];
-        console.log("[tokensModel.saveToken] newTOken = " + JSON.stringify(newTOken));
-        return { status: 200, data: newUser };
+        let newToken = result.recordset[0];
+        console.log("[tokensModel.saveToken] newToken = " + JSON.stringify(newToken));
+        return { status: 200, data: newToken };
     } catch (err) {
         console.log(err);
         if (err.errno == 547) // FK error
