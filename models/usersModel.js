@@ -40,7 +40,7 @@ module.exports.saveUser = async function(user) {
             "INTO users " +
             "(email, password) " +
             "OUTPUT Inserted.user_id " +
-            "VALUES (@email, @assword)";
+            "VALUES (@email, @password)";
         const pool = await poolPromise;
         const result = await pool.request()
             .input('email', mssql.VarChar, user.email)
@@ -51,10 +51,7 @@ module.exports.saveUser = async function(user) {
         return { status: 200, data: newUser };
     } catch (err) {
         console.log(err);
-        if (err.errno == 547) // FK error
-            return { status: 400, data: { msg: "Type not found" } };
-        else
-            return { status: 500, data: err };
+        return { status: 500, data: { msg: err.errMsg } };
     }
 }
 
