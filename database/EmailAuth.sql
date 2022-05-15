@@ -2,11 +2,6 @@ USE [master]
 GO
 /****** Object:  Database [EmailAuth]    Script Date: 15/05/2022 4:34:19 PM ******/
 CREATE DATABASE [EmailAuth]
- CONTAINMENT = NONE
- ON  PRIMARY 
-( NAME = N'EmailAuth', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\EmailAuth.mdf' , SIZE = 5120KB , MAXSIZE = UNLIMITED, FILEGROWTH = 1024KB )
- LOG ON 
-( NAME = N'EmailAuth_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\EmailAuth_log.ldf' , SIZE = 2048KB , MAXSIZE = 2048GB , FILEGROWTH = 10%)
 GO
 ALTER DATABASE [EmailAuth] SET COMPATIBILITY_LEVEL = 120
 GO

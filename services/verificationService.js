@@ -46,7 +46,7 @@ function sendVerificationEmail(email, token, jwtToken) {
             template: 'verification'
         };
 
-        console.log("[verificationService.sendVerificationEmail] transporter.auth = " + JSON.stringify(process.env.EMAIL_USER));
+        console.log("[verificationService.sendVerificationEmail] transporter.options.auth = " + JSON.stringify(transporter.options.auth));
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
