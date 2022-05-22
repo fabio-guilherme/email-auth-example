@@ -3,7 +3,7 @@ const hbs = require('nodemailer-express-handlebars');
 let nodeMailer = require("nodemailer");
 const dotenv = require('dotenv');
 dotenv.config();
-
+/*
 const transporter = nodeMailer.createTransport({
     service: "gmail",
     host: "smtp.gmail.com", // hostname
@@ -12,6 +12,19 @@ const transporter = nodeMailer.createTransport({
     tls: {
         ciphers: 'SSLv3',
         rejectUnauthorized: false
+    },
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD
+    }
+});
+*/
+let transporter = nodeMailer.createTransport({
+    host: "smtp-mail.outlook.com", // hostname
+    secureConnection: false, // TLS requires secureConnection to be false
+    port: 587, // port for secure SMTP
+    tls: {
+        ciphers: 'SSLv3'
     },
     auth: {
         user: process.env.EMAIL_USER,
@@ -46,13 +59,23 @@ function sendVerificationEmail(email, token, jwtToken) {
             template: 'verification'
         };
 
+
+        /*
+        var mailOptions = {
+            from: '"Our Code World " <mymail@outlook.com>', // sender address (who sends)
+            to: 'mymail@mail.com, mymail2@mail.com', // list of receivers (who receives)
+            subject: 'Hello ', // Subject line
+            text: 'Hello world ', // plaintext body
+            html: '<b>Hello world </b><br> This is the first email sent with Nodemailer in Node.js' // html body
+        };
+        */
+
         console.log("[verificationService.sendVerificationEmail] transporter.options.auth = " + JSON.stringify(transporter.options.auth));
 
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.log("sendMail error: ", error);
                 reject(error)
-
             } else {
                 resolve("Activation link has been sent!")
             }
